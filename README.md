@@ -19,19 +19,19 @@ npm install factory-castrado
 
 ### Defining factories
 Coffeescript:
-```
+```coffee
 Factory	= require 'factory-castrado'
 Model	= require('backbone').Model
 
 counter = 1
 
-# Define: name, model, attributes
+# Define with (name, model, attributes)
 Factory.define 'user', Model, 
 	email: (cb) -> cb("user#{counter++}@test.com")
 	name: "Test name"
 	password: 'abc123'
 
-# With associations, using options object:
+# With associations, using (name, options):
 Factory.define 'post',
 	model: Model
 	attributes:
@@ -45,7 +45,7 @@ Factory.define 'post',
 
 ### Using factories
 Coffeescript:
-```
+```coffee
 Factory.build 'user', (user) ->
 	# user is an unsaved user model
 
