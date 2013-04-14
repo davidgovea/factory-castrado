@@ -28,7 +28,7 @@ define = (name, model, options, attributes) ->
 
 		when 2
 			# Params are (name, options)
-			if model.attributes? or model.extends?
+			if model.attributes? or model.extends? or model.model?
 				options = model
 				model = undefined
 			# Params are (name, model) - no attributes, "blank"
@@ -108,9 +108,14 @@ build = (name, userAttrs, callback) ->
 				do ->
 					_key = key
 					setterFn ?= (obj, val) ->
-						current = obj.get _key
-						unless val in current
-							obj.set key, current.push(val)
+						arrayField = obj.get _key
+						arrayField ?= []
+
+						unless val in arrayField
+							arrayField.push val
+							obj.set key, arrayField
+
+
 
 
 		# Pass in override association objects
@@ -122,7 +127,6 @@ build = (name, userAttrs, callback) ->
 			assembledSetter = do ->
 				val = _val
 				return ((obj)-> 
-					# console.log 'SETTER', _val
 					setterFn(obj, _val)
 				)
 			
