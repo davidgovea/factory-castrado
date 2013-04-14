@@ -1,0 +1,23 @@
+{
+  "name": "mocha-coffeescript-boilerplate",
+  "version": "0.0.1",
+  "description": "Test data factories for Backbone",
+  "keywords": [],
+  "author": "David Govea <govea.d@gmail.com>",
+  "main": "index",
+  "engines": {
+    "node": ">= 0.4.x"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "dependencies": {
+    "coffee-script": ">= 1.6.0",
+    "lodash": "~1.1.1"
+  },
+  "devDependencies": {
+    "mocha": ">= 0.11.0",
+    "should": ">= 0.5.1",
+    "backbone": "~1.0.0"
+  }
+}
