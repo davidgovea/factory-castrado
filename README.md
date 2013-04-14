@@ -39,7 +39,8 @@ Factory.define 'post',
 		content: "Test content"
 	associations:
 		user:
-			factory: 'user'
+			factory: 'user'	# Defaults to association name (user here)
+			key: 'user_id'	# Defaults to name + _id
 
 ```
 
@@ -60,6 +61,32 @@ Factory.build 'post', (post) ->
 Factory.create 'user', (user) -> 
 	# User is SAVED model
 
+```
+
+### Associations
+Coffeescript:
+```coffee
+Factory.define 'post',
+	model: Model
+	associations:
+		user:
+			# Defaults to association name (user here)
+			factory: 'user'	
+			
+			# Defaults to name + _id
+			key: 'user_id'	
+			
+			# Gets foreign key from associated model
+			# Default getter, just grabs id
+			getter: (assocObj) -> return assocObj.id  
+			
+			# Sets foreign key on factory's built model
+			# Default setter (pseudocode - uses 'key' from above if setter not overridden)
+			setter: (obj, val) -> obj.set {{key}}, val
+			
+			 # Conveniently provides default setters/getters
+			type: 'id' # Currently supported: "id", "ids[]"
+			# Using type: "ids[]" provides a default setter than inserts id into object's array of ids
 ```
 
 
