@@ -1,28 +1,5 @@
-Backbone = require 'backbone'
 should = require 'should'
-Factory = require '../src/factory-castrado'
-
-Factory.define 'user',
-	model: Backbone.Model
-	attributes:
-		name: "David"
-		password: "crap123"
-
-Factory.define 'user-extended',
-	extends: 'user'
-	attributes:
-		extended: true
-
-Factory.define
-	name: 'user-options'
-	extends: 'user'
-	attributes:
-		extended: true
-
-Factory.define 'user-params',
-	extends: 'user'
-,
-	extended: true
+Factory = require './test-factories'
 
 
 basicTest = (factoryName) ->

@@ -1,40 +1,7 @@
 Backbone = require 'backbone'
 should = require 'should'
-Factory = require '../src/factory-castrado'
+Factory = require './test-factories'
 
-class TestModel extends Backbone.Model
-	create: (done) ->
-		@id = @cid
-		done()
-
-
-Factory.define 'user-assoc',
-	model: TestModel
-	attributes:
-		name: "David"
-		password: "crap123"
-	associations:
-		community:
-			factory: 'community-assoc'
-
-
-Factory.define 'community-assoc',
-	model: TestModel
-	attributes:
-		state: "California"
-		country: "USA"
-
-
-Factory.define 'post-assoc',
-
-	model: TestModel
-	attributes:
-		title: "Test title"
-	associations:
-		community: 
-			factory:'community-assoc'
-		author: 
-			factory:'user-assoc'
 
 
 
@@ -116,3 +83,44 @@ describe 'Specifying association overrides', ->
 				u_id.should.eql @user.id
 				
 				done()
+
+
+describe "Model with id-array 'ids[]' associations", ->
+	it 'should have two model associations attached', (done) ->
+		Factory.create 'message', (msg) =>
+			msg.from.id.should.be.ok
+			msg.to.id.should.be.ok
+			done()
+
+	it 'should have an array of the associated ids', (done) ->
+		Factory.create 'message', (msg) =>
+			user_ids = msg.get 'user_ids'
+
+			(msg.from.id in user_ids).should.be.true
+			(msg.to.id in user_ids).should.be.true
+
+			done()
+
+	describe "overriding array associations", ->
+		before (done) ->
+			Factory.create 'user-assoc', (user1) =>
+				@from = user1
+				Factory.create 'user-assoc', community: user1.community, (user2) =>
+					@to = user2
+					done()
+		it 'should be overridable for realistic tests', (done) ->
+			Factory.create 'message', 
+				from: @from
+				to: @to
+			, (msg) =>
+				msg.from.should.eql @from
+				msg.to.should.eql @to
+				done()
+		it 'should be able to associate realistic relationstips', (done) ->
+			Factory.create 'message', 
+				from: @from
+				to: @to
+			, (msg) =>
+				msg.to.get('community_id').should.eql msg.from.get('community_id')
+				done()
+			
