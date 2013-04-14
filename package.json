@@ -1,7 +1,7 @@
 {
-  "name": "mocha-coffeescript-boilerplate",
+  "name": "factory-castrado",
   "version": "0.0.1",
-  "description": "Test data factories for Backbone",
+  "description": "Node.js library for generating test data with factories. Inspired by factory_girl",
   "keywords": [],
   "author": "David Govea <govea.d@gmail.com>",
   "main": "index",

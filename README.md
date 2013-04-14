@@ -1,4 +1,5 @@
 # factory-castrado
+[![Build Status](https://travis-ci.org/davidgovea/factory-castrado.png)](https://travis-ci.org/davidgovea/factory-castrado)
 
 Factory Castrado is a library for Node.js which provides factories for objects creation. It is designed for use with Backbone-style models which use ```new Model(attributes)``` for initialization and ```model.create(function(err, model){...})``` for saving.  
   
