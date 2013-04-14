@@ -88,6 +88,25 @@ Factory.define 'post',
 			 # Conveniently provides default setters/getters
 			type: 'id' # Currently supported: "id", "ids[]"
 			# Using type: "ids[]" provides a default setter than inserts id into object's array of ids
+
+
+# Id-array associations
+# This will generate a message model with:
+# user_ids: [id1, id2]
+# as well as user models attached directly at msg.to , msg.from
+Factory.define 'message',
+	model: MessageModel
+	attributes:
+		title: "Hello World"
+	associations:
+		from:
+			factory: 'user'
+			key: 'user_ids'
+			type: 'ids[]'
+		to:
+			factory: 'user'
+			key: 'user_ids'
+			type: 'ids[]'
 ```
 
 
