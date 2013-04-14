@@ -167,19 +167,17 @@ build = (name, userAttrs, callback) ->
 		, ->
 			object = new model attributes
 
-			for own key, val of attributes
-				object.set key, val
-
 			for own key, val of associations
 				object[key] = val
 
 			object.once 'setAssoc', ->
 				for setter in setters
 					setter?(object)
-
-			# 	setter() for setter in setters
 			object.trigger 'setAssoc'
 
+			for own key, val of attributes
+				object.set key, val
+			
 			callback(object)
 
 
