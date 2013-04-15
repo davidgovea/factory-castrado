@@ -109,6 +109,33 @@ Factory.define 'message',
 			type: 'ids[]'
 ```
 
+### Custom Factories
+Coffeescript: 
+```coffee
+# Custom factories can be defined with a function
+Factory.define 'two users and a random number', (callback) ->
+	Factory.create 'user', (user1) ->
+		Factory.create 'user', (user2) ->
+
+			randomNum = ~~(Math.random()*10)
+			callback(user1, user2, randomNum)
+
+# Using it:
+Factory.create 'two users and a random number', (user1, user2, randomNum) ->
+
+# Custom attributes will be passed through to 
+# custom factories after callback parameter:
+Factory.define 'helloworld', (callback, options) ->
+	data = "Hello World"
+	if options?.caps
+		return callback(data.toUpperCase())
+
+	callback(data)
+
+Factory.create 'helloworld', (string) -> # string == 'Hello World'
+Factory.create 'helloworld', caps:true, (string) -> # string == 'HELLO WORLD'
+```
+
 
 ## License
 
