@@ -51,7 +51,7 @@ define = (name, model, options, attributes) ->
 			# (Nothing to do)
 
 	model = options?.model ? model
-	attributes = options?.attributes ? attributes
+	attributes = options?.attributes ? attributes ? {}
 	name = options?.name ? name
 	associations = options?.associations ? {}
 
