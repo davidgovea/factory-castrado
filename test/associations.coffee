@@ -1,4 +1,3 @@
-Backbone = require 'backbone'
 should = require 'should'
 Factory = require './test-factories'
 

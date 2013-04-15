@@ -7,7 +7,6 @@ class TestModel extends Backbone.Model
 		done()
 
 
-
 Factory.define 'user',
 	model: TestModel
 	attributes:
@@ -26,8 +25,10 @@ Factory.define
 		extended: true
 
 Factory.define 'user-params',
+	# Options
 	extends: 'user'
 ,
+	# Attributes
 	extended: true
 
 
@@ -64,6 +65,8 @@ Factory.define 'message',
 	attributes:
 		subject: "Hi there"
 	associations:
+		community:
+			factory: 'community-assoc'
 		from:
 			factory: 'user'
 			key: 'user_ids'
@@ -72,6 +75,21 @@ Factory.define 'message',
 			factory: 'user'
 			key: 'user_ids'
 			type: 'ids[]'
+
+
+Factory.define 'message between two users', (callback) ->
+	
+	Factory.create 'user-assoc', (user1) ->
+		
+		Factory.create 'user-assoc', user: user1, community: user1.community, (user2) ->
+			
+			Factory.create 'message',
+				to: user1
+				from: user2
+				community: user1.community
+			, (message) ->
+
+				callback message, user1, user2
 
 
 module.exports = Factory

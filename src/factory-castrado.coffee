@@ -31,10 +31,12 @@ define = (name, model, options, attributes) ->
 			if model.attributes? or model.extends? or model.model?
 				options = model
 				model = undefined
-			# Params are (name, model) - no attributes, "blank"
-			else
-				attributes = model
-				model = undefined
+
+			# Params are (name, function) - custom
+			else if typeof model is 'function'
+				# Custom fn factory
+				factories[name] = model
+				return true
 
 		when 3
 			# Params are (name, options, attributes)
@@ -77,6 +79,10 @@ build = (name, userAttrs, callback) ->
 	if typeof userAttrs is 'function'
 		[callback, userAttrs] = [userAttrs, {}]
 	factory = factories[name]
+
+	# Handle custom function factories
+	if typeof factory is 'function'
+		return factory(callback, userAttrs)
 
 	model = factory.model
 
@@ -184,6 +190,10 @@ build = (name, userAttrs, callback) ->
 create = (name, userAttrs, callback) ->
 	if typeof userAttrs is 'function'
 		[callback, userAttrs] = [userAttrs, {}]
+
+	# Custom factory
+	if typeof factories[name] is 'function'
+		return factories[name](callback, userAttrs)
 
 	build name, userAttrs, (doc) ->
 		doc.create (err) ->
