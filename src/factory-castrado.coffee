@@ -118,7 +118,7 @@ build = (name, userAttrs, callback) ->
 						arrayField ?= []
 
 						unless val in arrayField
-							arrayField.push val
+							arrayField.push?(val)
 							obj.set key, arrayField
 
 
