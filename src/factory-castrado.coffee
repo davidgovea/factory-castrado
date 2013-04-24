@@ -63,10 +63,10 @@ define = (name, model, options, attributes) ->
 		# Set model if not already set
 		model ?= parent.model
 		# Get copy of parent attributes, and merge
-		parentAttrs = _.clone parent.attributes
+		parentAttrs = _.clone parent?.attributes ? {}
 		_.defaults attributes, parentAttrs
 		# Get copy of parent associations, and merge
-		parentAssoc = _.clone parent.associations
+		parentAssoc = _.clone parent?.associations ? {}
 		_.defaults associations, parentAssoc
 
 
@@ -75,7 +75,7 @@ define = (name, model, options, attributes) ->
 		attributes: attributes
 		associations: associations
 
-build = (name, userAttrs, callback) ->
+build = (name, userAttrs, callback, noAssociations=false) ->
 	if typeof userAttrs is 'function'
 		[callback, userAttrs] = [userAttrs, {}]
 	factory = factories[name]
@@ -87,6 +87,7 @@ build = (name, userAttrs, callback) ->
 	model = factory.model
 
 	associations = _.clone factory.associations
+	if noAssociations then associations = []
 	attributes = _.clone factory.attributes
 	_.extend attributes, userAttrs
 
@@ -197,14 +198,25 @@ create = (name, userAttrs, callback) ->
 
 	build name, userAttrs, (doc) ->
 		doc.create (err) ->
-			if err then throw err
+			if err then callback null, err
 
-			callback doc
+			callback?(doc)
+
+attributesFor = (name, attrs, callback) ->
+	if typeof attrs is 'function'
+		[callback, attrs] = [attrs, {}]
+
+	build name, attrs, (doc) ->
+		callback doc.toJSON()
+	, "noAssociations"
+
+
 
 Factory = create
 Factory.define = define
 Factory.build = build
 Factory.create = create
+Factory.attributesFor = attributesFor
 
 
 module.exports = Factory

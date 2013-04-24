@@ -1,6 +1,6 @@
 {
   "name": "factory-castrado",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Node.js library for generating test data with factories. Inspired by factory_girl",
   "keywords": [],
   "author": "David Govea <govea.d@gmail.com>",

@@ -136,6 +136,17 @@ Factory.create 'helloworld', (string) -> # string == 'Hello World'
 Factory.create 'helloworld', caps:true, (string) -> # string == 'HELLO WORLD'
 ```
 
+### Getting attributes with attributesFor
+Coffeescript:
+```coffee
+# Get raw object of attributes
+Factory.attributesFor 'user', (attrs) ->
+
+# Specify some options
+Factory.attributesFor 'user', name: "Bob", (attrs) ->
+
+```
+
 
 ## License
 
