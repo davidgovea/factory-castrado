@@ -1,8 +1,8 @@
 # factory-castrado
 [![Build Status](https://travis-ci.org/davidgovea/factory-castrado.png)](https://travis-ci.org/davidgovea/factory-castrado)
 
-Factory Castrado is a library for Node.js which provides factories for objects creation. It is designed for use with Backbone-style models which use ```new Model(attributes)``` for initialization and ```model.create(function(err, model){...})``` for saving.  
-  
+Factory Castrado is a library for Node.js which provides factories for objects creation. It is designed for use with Backbone-style models which use ```new Model(attributes)``` for initialization and ```model.create(function(err, model){...})``` for saving.
+
 It is highly inspired by:
 - [factory_girl](https://github.com/thoughtbot/factory_girl) - ruby
 - [factory-lady](https://github.com/petejkim/factory-lady) - node.js
@@ -24,10 +24,18 @@ Coffeescript:
 Factory	= require 'factory-castrado'
 Model	= require('backbone').Model
 
+class Session
+	save: (callback) ->
+		callback()
+
 counter = 1
 
+# Define using non Backbone model
+Factory.define 'session', Session,
+	id: (cb) -> cb(Math.random())
+
 # Define with (name, model, attributes)
-Factory.define 'user', Model, 
+Factory.define 'user', Model,
 	email: (cb) -> cb("user#{counter++}@test.com")
 	name: "Test name"
 	password: 'abc123'
@@ -59,7 +67,7 @@ Factory.build 'post', (post) ->
 	# post.user is a saved associated user model
 	# post has new attribute 'user_id' with the user's id
 
-Factory.create 'user', (user) -> 
+Factory.create 'user', (user) ->
 	# User is SAVED model
 
 ```
@@ -72,19 +80,19 @@ Factory.define 'post',
 	associations:
 		user:
 			# Defaults to association name (user here)
-			factory: 'user'	
-			
+			factory: 'user'
+
 			# Defaults to name + _id
-			key: 'user_id'	
-			
+			key: 'user_id'
+
 			# Gets foreign key from associated model
 			# Default getter, just grabs id
-			getter: (assocObj) -> return assocObj.id  
-			
+			getter: (assocObj) -> return assocObj.id
+
 			# Sets foreign key on factory's built model
 			# Default setter (pseudocode - uses 'key' from above if setter not overridden)
 			setter: (obj, val) -> obj.set {{key}}, val
-			
+
 			 # Conveniently provides default setters/getters
 			type: 'id' # Currently supported: "id", "ids[]"
 			# Using type: "ids[]" provides a default setter than inserts id into object's array of ids
@@ -110,7 +118,7 @@ Factory.define 'message',
 ```
 
 ### Custom Factories
-Coffeescript: 
+Coffeescript:
 ```coffee
 # Custom factories can be defined with a function
 Factory.define 'two users and a random number', (callback) ->
@@ -123,7 +131,7 @@ Factory.define 'two users and a random number', (callback) ->
 # Using it:
 Factory.create 'two users and a random number', (user1, user2, randomNum) ->
 
-# Custom attributes will be passed through to 
+# Custom attributes will be passed through to
 # custom factories after callback parameter:
 Factory.define 'helloworld', (callback, options) ->
 	data = "Hello World"

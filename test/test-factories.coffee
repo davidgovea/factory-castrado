@@ -7,9 +7,6 @@ class TestModel extends Backbone.Model
 		done()
 
 class PlainTestModel
-	constructor : (attributes) ->
-		@[key] = value for value, key in attributes
-
 	save: (callback) ->
 		callback()
 
