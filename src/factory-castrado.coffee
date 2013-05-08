@@ -1,5 +1,8 @@
 _ = require 'lodash'
 
+try
+	Backbone = require 'backbone'
+catch e
 
 asyncForEach = (array, handler, callback) ->
 	length = array.length
@@ -41,7 +44,7 @@ define = (name, model, options, attributes) ->
 		when 3
 			# Params are (name, options, attributes)
 			if model.attributes? or model.extends? or model.model?
-				[options, attributes] = [model, options] 
+				[options, attributes] = [model, options]
 				model = undefined
 
 			# Params are (name, model, attributes)
@@ -70,7 +73,7 @@ define = (name, model, options, attributes) ->
 		_.defaults associations, parentAssoc
 
 
-	factories[name] = 
+	factories[name] =
 		model: model
 		attributes: attributes
 		associations: associations
@@ -93,6 +96,12 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 
 	setters = []
 
+	get = (obj, key) ->
+		if typeof obj.get is 'function' then obj.get(key) else obj[key]
+
+	set = (obj, key, value) ->
+		if typeof obj.set is 'function' then obj.set(key, value) else obj[key] = value
+
 	# Compute associations
 	asyncForEach _.keys(associations), (assocName, cb) ->
 		assoc = associations[assocName]
@@ -106,7 +115,7 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 				key ?= assocName + '_id'
 				do ->
 					_key = key
-					setterFn ?= (obj, val) -> 
+					setterFn ?= (obj, val) ->
 						obj.set _key, val
 
 
@@ -115,12 +124,12 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 				do ->
 					_key = key
 					setterFn ?= (obj, val) ->
-						arrayField = obj.get _key
+						arrayField = get obj, _key
 						arrayField ?= []
 
 						unless val in arrayField
 							arrayField.push?(val)
-							obj.set key, arrayField
+							set obj, key, arrayField
 
 
 
@@ -133,10 +142,10 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 
 			assembledSetter = do ->
 				val = _val
-				return ((obj)-> 
+				return ((obj)->
 					setterFn(obj, _val)
 				)
-			
+
 			setters.push assembledSetter
 
 			cb()
@@ -152,7 +161,7 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 
 				assembledSetter = do ->
 					_val = val
-					return ((obj)-> 
+					return ((obj)->
 						# console.log 'SETTER', _val
 						setterFn(obj, _val)
 					)
@@ -177,14 +186,19 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 			for own key, val of associations
 				object[key] = val
 
-			object.once 'setAssoc', ->
+			processSetters = ->
 				for setter in setters
 					setter?(object)
-			object.trigger 'setAssoc'
+
+			if Backbone? and object is Backbone.Model
+				object.once 'setAssoc', processSetters
+				object.trigger 'setAssoc'
+			else
+				processSetters()
 
 			for own key, val of attributes
-				object.set key, val
-			
+				set object, key, val
+
 			callback(object)
 
 

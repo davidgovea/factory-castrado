@@ -1,11 +1,28 @@
 Factory = require '../src/factory-castrado'
-
 Backbone = require 'backbone'
+
 class TestModel extends Backbone.Model
 	create: (done) ->
 		@id = @cid
 		done()
 
+class PlainTestModel
+	constructor : (attributes) ->
+		@[key] = value for value, key in attributes
+
+	save: (callback) ->
+		callback()
+
+Factory.define 'plain',
+	model: PlainTestModel
+	attributes:
+		name: "David"
+		password: "crap123"
+
+Factory.define 'plain-extended',
+	extends: 'plain'
+	attributes:
+		extended: true
 
 Factory.define 'user',
 	model: TestModel
@@ -55,9 +72,9 @@ Factory.define 'post-assoc',
 	attributes:
 		title: "Test title"
 	associations:
-		community: 
+		community:
 			factory:'community-assoc'
-		author: 
+		author:
 			factory:'user-assoc'
 
 Factory.define 'message',
@@ -78,11 +95,11 @@ Factory.define 'message',
 
 
 Factory.define 'message between two users', (callback) ->
-	
+
 	Factory.create 'user-assoc', (user1) ->
-		
+
 		Factory.create 'user-assoc', user: user1, community: user1.community, (user2) ->
-			
+
 			Factory.create 'message',
 				to: user1
 				from: user2
