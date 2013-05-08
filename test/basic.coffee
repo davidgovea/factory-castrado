@@ -6,9 +6,14 @@ get = (obj, key) ->
 
 basicTest = (factoryName) ->
 	describe "Basic factory #{factoryName}", ->
-		it 'should create a model', (done) ->
+		it 'should build a model', (done) ->
 			# debugger
 			Factory.build factoryName, (model) ->
+				done()
+
+		it 'should create a model', (done) ->
+			# debugger
+			Factory.create factoryName, (model) ->
 				done()
 
 		it 'should have name and password', (done) ->

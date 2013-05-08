@@ -7,7 +7,7 @@ class TestModel extends Backbone.Model
 		done()
 
 class PlainTestModel
-	save: (callback) ->
+	create: (callback) ->
 		callback()
 
 Factory.define 'plain',

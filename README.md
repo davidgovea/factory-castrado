@@ -25,7 +25,7 @@ Factory	= require 'factory-castrado'
 Model	= require('backbone').Model
 
 class Session
-	save: (callback) ->
+	create: (callback) ->
 		callback()
 
 counter = 1
