@@ -198,7 +198,7 @@ create = (name, userAttrs, callback) ->
 
 	build name, userAttrs, (doc) ->
 		doc.create (err) ->
-			if err then callback null, err
+			if err then return callback null, err
 
 			callback?(doc)
 
