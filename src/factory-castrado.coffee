@@ -193,15 +193,9 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 			for own key, val of associations
 				object[key] = val
 
-			processSetters = ->
-				for setter in setters
-					setter?(object)
 
-			if Backbone? and object is Backbone.Model
-				object.once 'setAssoc', processSetters
-				object.trigger 'setAssoc'
-			else
-				processSetters()
+			for setter in setters
+				setter?(object)
 
 			for own key, val of attributes
 				set object, key, val
