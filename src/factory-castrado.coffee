@@ -20,6 +20,7 @@ asyncForEach = (array, handler, callback) ->
 
 
 factories = {}
+shimmedModelFields = ['get', 'set']
 
 define = (name, model, options, attributes) ->
 	# Handle argument combinations
@@ -103,12 +104,6 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 
 	setters = []
 
-	get = (obj, key) ->
-		if typeof obj.get is 'function' then obj.get(key) else obj[key]
-
-	set = (obj, key, value) ->
-		if typeof obj.set is 'function' then obj.set(key, value) else obj[key] = value
-
 	# Compute associations
 	asyncForEach _.keys(associations), (assocName, cb) ->
 		assoc = associations[assocName]
@@ -131,12 +126,12 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 				do ->
 					_key = key
 					setterFn ?= (obj, val) ->
-						arrayField = get obj, _key
+						arrayField = obj.get _key
 						arrayField ?= []
 
 						unless val in arrayField
 							arrayField.push?(val)
-							set obj, key, arrayField
+							obj.set key, arrayField
 
 
 
@@ -181,7 +176,7 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 		asyncForEach _.keys(attributes), (key, cb) ->
 			fn = attributes[key]
 			# Lazy attribute
-			if typeof fn is 'function'
+			if typeof fn is 'function' and key not in shimmedModelFields
 				fn (computedVal) ->
 					attributes[key] = computedVal
 					cb()
@@ -193,12 +188,17 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 			for own key, val of associations
 				object[key] = val
 
+			# Shim plain objects
+			if not object.get? then _.extend (object:: ? object),
+				get: (attr) -> @[attr]
+			if not object.set? then _.extend (object:: ? object),
+				set: (attr, val) -> @[attr] = val
 
 			for setter in setters
 				setter?(object)
 
 			for own key, val of attributes
-				set object, key, val
+				object.set key, val
 
 			callback(object)
 

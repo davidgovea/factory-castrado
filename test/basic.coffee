@@ -1,9 +1,6 @@
 should = require 'should'
 Factory = require './test-factories'
 
-get = (obj, key) ->
-	if typeof obj.get is 'function' then obj.get(key) else obj[key]
-
 basicTest = (factoryName) ->
 	describe "Basic factory #{factoryName}", ->
 		it 'should build a model', (done) ->
@@ -18,8 +15,8 @@ basicTest = (factoryName) ->
 
 		it 'should have name and password', (done) ->
 			Factory.build factoryName, (model) ->
-				get(model, 'name').should.eql "David"
-				get(model, 'password').should.eql "crap123"
+				model.get('name').should.eql "David"
+				model.get('password').should.eql "crap123"
 				done()
 
 describe 'tests', ->
