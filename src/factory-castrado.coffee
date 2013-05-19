@@ -200,7 +200,7 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 			for own key, val of attributes
 				object.set key, val
 
-			callback(object)
+			callback?(object)
 
 
 create = (name, userAttrs, callback) ->
@@ -212,10 +212,14 @@ create = (name, userAttrs, callback) ->
 		return factories[name](callback, userAttrs)
 
 	build name, userAttrs, (doc) ->
-		doc.create (err) ->
+		doc.create? (err) ->
 			if err then return callback null, err
 
 			callback?(doc)
+
+		if not doc.create?
+			callback?(doc)
+
 
 attributesFor = (name, attrs, callback) ->
 	if typeof attrs is 'function'
