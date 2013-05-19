@@ -83,6 +83,13 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 		[callback, userAttrs] = [userAttrs, {}]
 	factory = factories[name]
 
+	if typeof callback isnt 'function'
+		err = new Error "No callback specified"
+		return throw err		
+	if not factory?
+		err = new Error "factory-castrado cannot find factory: #{name}"
+		return throw err		
+
 	# Handle custom function factories
 	if typeof factory is 'function'
 		return factory(callback, userAttrs)
