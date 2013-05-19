@@ -6,9 +6,7 @@ class TestModel extends Backbone.Model
 		@id = @cid
 		done()
 
-class PlainTestModel
-	create: (callback) ->
-		callback()
+class PlainTestModel extends Object
 
 Factory.define 'plain',
 	model: PlainTestModel
@@ -20,6 +18,15 @@ Factory.define 'plain-extended',
 	extends: 'plain'
 	attributes:
 		extended: true
+		set: -> return "override"
+
+Factory.define 'plain-assoc',
+	extends: 'plain'
+	attributes:
+		extended: true
+	associations:
+		community:
+			factory: 'community-assoc'
 
 Factory.define 'user',
 	model: TestModel
