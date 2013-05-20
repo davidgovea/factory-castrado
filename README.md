@@ -88,7 +88,7 @@ Factory.define 'plainUser',
 ### Using factories
 Coffeescript:
 ```coffee
-Factory.build 'user', (user) ->
+Factory.build 'user', (user) -> # (err, user) -> Also supported
 	# user is an unsaved user model
 
 Factory.build 'user', name:"New", (user) ->
@@ -99,8 +99,17 @@ Factory.build 'post', (post) ->
 	# post.user is a saved associated user model
 	# post has new attribute 'user_id' with the user's id
 
-Factory.create 'user', (user) ->
+Factory.create 'user', (user) -> # (err, user) -> Also supported
 	# User is SAVED model
+
+# A note about Error-first callbacks:
+# factory-castrado checks the callback's arity to determine
+# if it is an error-first callback. These are both supported:
+Factory.create 'user', (err, user) ->
+Factory.create 'user', (user) -> # Don't care about the error
+
+# However, this will NOT work:
+Factory.create 'user', (err) -> # DOES NOT WORK - argument will be user, not err.
 
 ```
 
