@@ -4,11 +4,17 @@ Factory = require './test-factories'
 
 describe 'Error handling behavior', ->
 
-	it 'should throw error if given no callback', ->
+	it 'should not throw error if #build given no callback', ->
 		fn = ->
 			Factory.build 'user'
 
-		fn.should.throw(/callback/i)
+		fn.should.not.throw()
+
+	it 'should not throw error if #create given no callback', ->
+		fn = ->
+			Factory.create 'user'
+
+		fn.should.not.throw()
 
 	it 'should inform if non-existing factory specified', ->
 		fn = ->
