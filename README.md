@@ -18,21 +18,35 @@ npm install factory-castrado
 
 ## Usage
 
+### Model requirements
+Coffeescript:
+```coffee
+# factory-castrado puts only one requirement on models: 
+# they *must be constructor functions* that accept an attributes object.
+# Your model must be comply with:
+model = new Model(attributes)
+
+# In order to save to model to a database during Factory.create, 
+# factory-castrado uses "model.create (err, model) ->"
+Model::create = (done) ->
+	# ...Insert into db...
+	done(error, this)
+
+# If no create method is found, the model is passed back without saving.
+
+# If a non-backbone object is given for a factory's models,
+# the model.get() and model.set() methods are shimmed.
+
+```
+
 ### Defining factories
 Coffeescript:
 ```coffee
-Factory	= require 'factory-castrado'
-Model	= require('backbone').Model
-
-class Session
-	create: (callback) ->
-		callback()
+Factory		= require 'factory-castrado'
+Model		= require('backbone').Model
+PlainModel	= class extends Object # Bare object
 
 counter = 1
-
-# Define using non Backbone model
-Factory.define 'session', Session,
-	id: (cb) -> cb(Math.random())
 
 # Define with (name, model, attributes)
 Factory.define 'user', Model,
@@ -47,9 +61,27 @@ Factory.define 'post',
 		title: "Test title"
 		content: "Test content"
 	associations:
-		user:
+		user:				# This creates an embedded post.user object, and a user_id attribute
 			factory: 'user'	# Defaults to association name (user here)
 			key: 'user_id'	# Defaults to name + _id
+
+# Non-Backbone objects work the same:
+# NOTE: factory-castrado shims model.get() and model.set() methods
+Factory.define 'session', PlainModel,
+	id: (cb) -> cb(Math.random())
+	expires: (cb) -> cb (require 'moment')().add('days', 7).toDate()
+
+Factory.define 'plainUser',
+	model: PlainModel,
+	attributes:
+		name: "Test"
+	associations:
+		session:				
+			factory: 'session'	# Attaches embedded user.session
+			key: 'session_id'	# Attaches user.session_id foreign key
+
+			# On a backbone-style model, the foreign key would be in 
+			# the model's attributes hash, accessed using user.get('session_id')
 
 ```
 
