@@ -219,7 +219,7 @@ attributesFor = (name, attrs, callback) ->
 	[returnCb, errorCb] = utils.flexCb(callback)
 
 	build name, attrs, (doc) ->
-		returnCb doc.toJSON()
+		returnCb doc.toJSON?() or doc
 	, "noAssociations"
 
 

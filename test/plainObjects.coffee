@@ -4,7 +4,7 @@ Factory = require './test-factories'
 
 describe 'Plain object constructors', ->
 	beforeEach (done) -> 
-		Factory.build 'plain', (obj) =>
+		Factory.build 'plainUser', (obj) =>
 			@obj = obj
 			done()
 	it 'should have shimmed .get method', ->
@@ -18,7 +18,7 @@ describe 'Plain object constructors', ->
 
 describe "Extended plain factores", ->
 	beforeEach (done) -> 
-		Factory.build 'plain-extended', (obj) =>
+		Factory.build 'plainUser-extended', (obj) =>
 			@obj = obj
 			done()
 
@@ -32,7 +32,7 @@ describe "Extended plain factores", ->
 
 describe "Plain object with associatons", ->
 	beforeEach (done) -> 
-		Factory.build 'plain-assoc', (obj) =>
+		Factory.build 'plainUser-assoc', (obj) =>
 			@obj = obj
 			done()
 

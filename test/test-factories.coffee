@@ -8,20 +8,20 @@ class TestModel extends Backbone.Model
 
 class PlainTestModel extends Object
 
-Factory.define 'plain',
+Factory.define 'plainUser',
 	model: PlainTestModel
 	attributes:
 		name: "David"
 		password: "crap123"
 
-Factory.define 'plain-extended',
-	extends: 'plain'
+Factory.define 'plainUser-extended',
+	extends: 'plainUser'
 	attributes:
 		extended: true
 		set: -> return "override"
 
-Factory.define 'plain-assoc',
-	extends: 'plain'
+Factory.define 'plainUser-assoc',
+	extends: 'plainUser'
 	attributes:
 		extended: true
 	associations:

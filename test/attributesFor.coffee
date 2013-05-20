@@ -11,3 +11,9 @@ describe 'attributesFor', ->
 		Factory.attributesFor 'user-assoc', (attrs) ->
 			should.not.exist attrs.community
 			done()
+
+	describe "For non-backbone object", ->
+		it "should return data for plain models", (done) ->
+			Factory.attributesFor 'plainUser-extended', (attrs) ->
+				attrs.name.should.be.ok
+				done()
