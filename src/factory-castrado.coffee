@@ -203,7 +203,7 @@ create = (name, userAttrs, callback) ->
 	build name, userAttrs, (err, doc) ->
 		if err then return errorCb err
 
-		doc.create? (err) ->
+		doc.create? (err, model) ->
 			if err then return errorCb err
 
 			returnCb(doc)
