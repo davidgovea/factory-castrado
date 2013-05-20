@@ -21,3 +21,20 @@ describe 'Error handling behavior', ->
 			Factory.create 'user!@3$4%', (thing) ->
 
 		fn.should.throw(/cannot.*find/i)
+
+
+describe "Error-first callback style", ->
+
+	it "should support error-first style callbacks", (done) ->
+
+		Factory.create 'user', (err, user) ->
+			should.not.exist err
+			user.should.be.ok
+			done()
+
+	it "should return an error when invalid factory specified", (done) ->
+
+		Factory.create 'user*%#*#93', (err, user) ->
+			should.exist err
+			err.message.should.match /cannot.*find/
+			done()

@@ -1,22 +1,9 @@
 _ = require 'lodash'
+utils = require './utils'
 
 try
 	Backbone = require 'backbone'
 catch e
-
-asyncForEach = (array, handler, callback) ->
-	length = array.length
-	index = -1
-
-	processNext = ->
-		index++
-		if index < length
-			item = array[index]
-			handler item, processNext
-		else
-			callback()
-
-	processNext()
 
 
 factories = {}
@@ -83,14 +70,17 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 	if typeof userAttrs is 'function'
 		[callback, userAttrs] = [userAttrs, {}]
 	factory = factories[name]
-
-	if not factory?
-		err = new Error "factory-castrado cannot find factory: #{name}"
-		return throw err		
+	
 
 	# Handle custom function factories
 	if typeof factory is 'function'
 		return factory(callback, userAttrs)
+
+	[returnCb, errorCb] = utils.flexCb(callback)
+
+	if not factory?
+		err = new Error "factory-castrado cannot find factory: #{name}"
+		return errorCb err
 
 	model = factory.model
 
@@ -102,7 +92,7 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 	setters = []
 
 	# Compute associations
-	asyncForEach _.keys(associations), (assocName, cb) ->
+	utils.asyncForEach _.keys(associations), (assocName, cb) ->
 		assoc = associations[assocName]
 
 		assocFactory = factories[assoc.factory ? assocName]
@@ -170,7 +160,7 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 
 	, ->
 
-		asyncForEach _.keys(attributes), (key, cb) ->
+		utils.asyncForEach _.keys(attributes), (key, cb) ->
 			fn = attributes[key]
 			# Lazy attribute
 			if typeof fn is 'function' and key not in shimmedModelFields
@@ -197,7 +187,7 @@ build = (name, userAttrs, callback, noAssociations=false) ->
 			for own key, val of attributes
 				object.set key, val
 
-			callback?(object)
+			returnCb(object)
 
 
 create = (name, userAttrs, callback) ->
@@ -208,22 +198,28 @@ create = (name, userAttrs, callback) ->
 	if typeof factories[name] is 'function'
 		return factories[name](callback, userAttrs)
 
-	build name, userAttrs, (doc) ->
-		doc.create? (err) ->
-			if err then return callback null, err
+	[returnCb, errorCb] = utils.flexCb(callback)
 
-			callback?(doc)
+	build name, userAttrs, (err, doc) ->
+		if err then return errorCb err
+
+		doc.create? (err) ->
+			if err then return errorCb err
+
+			returnCb(doc)
 
 		if not doc.create?
-			callback?(doc)
+			returnCb(doc)
 
 
 attributesFor = (name, attrs, callback) ->
 	if typeof attrs is 'function'
 		[callback, attrs] = [attrs, {}]
 
+	[returnCb, errorCb] = utils.flexCb(callback)
+
 	build name, attrs, (doc) ->
-		callback doc.toJSON()
+		returnCb doc.toJSON()
 	, "noAssociations"
 
 
