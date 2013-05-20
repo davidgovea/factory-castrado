@@ -20,8 +20,8 @@ basicTest = (factoryName) ->
 				done()
 
 describe 'tests', ->
-	basicTest 'plain'
-	basicTest 'plain-extended'
+	basicTest 'plainUser'
+	basicTest 'plainUser-extended'
 	basicTest 'user'
 	basicTest 'user-extended'
 	basicTest 'user-options'
