@@ -1,9 +1,13 @@
 {
   "name": "factory-castrado",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Node.js library for generating test data with factories. Inspired by factory_girl",
-  "keywords": [],
+  "keywords": ["factory", "test", "testing", "data", "bdd", "tdd", "fixture", "mock", "mocking"],
   "author": "David Govea <govea.d@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidgovea/factory-castrado"
+  },
   "main": "index",
   "engines": {
     "node": ">= 0.4.x"
